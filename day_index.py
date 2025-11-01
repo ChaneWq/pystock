@@ -13,6 +13,30 @@ def init_create_client():
     return client
 
 """
+获取股票最新价格
+"""
+def get_cur_price(code, client=""):
+    """
+    获取指定股票的最新价格
+    
+    参数:
+    code: 股票代码
+    client: 数据客户端
+    
+    返回:
+    float: 股票最新价格
+    """
+    # 获取最近1日的K线数据
+    df = client.bars(symbol=code, frequency='day', offset=1)
+    
+    if df is not None and not df.empty:
+        # 返回最新收盘价
+        return df['close'].iloc[-1]
+    else:
+        # 如果没有数据，返回0
+        return 0
+
+"""
 datestr = 2025-01-09
 获取最新月kdj 或 指定日期的kdj
 """
@@ -207,3 +231,5 @@ def get_day_bbi(code,datestr="",client=""):
 
 # print(get_day_kdj("000400",client=client))
 # print(get_day_kdj("000400",client=client))
+# a = get_cur_price('000400',client)
+# print(a)
