@@ -401,7 +401,6 @@ if __name__ == "__main__":
 		auto:自动识别
 		csv,excel
 	"""
-	
 	csv_params = {
 		'file_type': 'auto',
 		'sep': ',',
