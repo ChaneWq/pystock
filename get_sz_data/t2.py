@@ -2,11 +2,24 @@ import requests
 import csv
 import json
 import re
+import os
 from typing import Dict, Any, Optional
 """
 上证指数数据下载（指定日期范围）日，周，月k数据
 来源url: https://q.stock.sohu.com/zs/000001/lshq.shtml
 """
+
+"""
+PERIOD:
+	d:天
+	w:周
+	m:月
+CODE:指数代码
+"""
+START_DATE = '20250108'
+END_DATE = '20250115'
+CODE = 'zs_000001'
+PERIOD = 'd'
 
 def requests_fetch_data(url: str, params: Optional[Dict[str, Any]] = None,
                      headers: Optional[Dict[str, str]] = None) -> str:
@@ -60,10 +73,16 @@ def parse_stock_data(response_text: str) -> Dict[str, Any]:
 	return data
 
 
-def save_stock_data_to_csv(data: Dict[str, Any], filename: str = "stock_data.csv"):
+def save_stock_data_to_csv(data: Dict[str, Any], start_date: str, end_date: str, code: str ,period:str):
 	"""
-	将股票数据保存为CSV文件
+	将股票数据保存为CSV文件，文件名为"data/开始日期-结束日期-code.csv"
 	"""
+	# 创建data目录（如果不存在）
+	os.makedirs("data", exist_ok=True)
+	
+	# 构造文件名
+	filename = f"data/{start_date}-{end_date}-{code}-{period}.csv"
+	
 	# CSV表头
 	headers = ["日期", "开盘价", "收盘价", "涨跌额", "涨跌幅", "最低价", "最高价", "成交量", "成交金额(万)", "换手率"]
 	
@@ -84,19 +103,14 @@ def save_stock_data_to_csv(data: Dict[str, Any], filename: str = "stock_data.csv
 if __name__ == "__main__":
 
 	base_url = 'https://q.stock.sohu.com/hisHq'
-	"""
-	period:
-		d:天
-		w:周
-		m:月
-	"""
+
 	params = {
-		'code': 'zs_000001',
-		'start':'20250108',
-		'end':'20250115',
+		'code': CODE,
+		'start': START_DATE,
+		'end': END_DATE,
 		'stat': 1,
 		'order': 'D',
-		'period': 'd',
+		'period': PERIOD,
 		'callback': 'historySearchHandler',
 		'rt': 'jsonp'
 	}
@@ -119,7 +133,7 @@ if __name__ == "__main__":
 			print("\n" + "=" * 60 + "\n")
 			
 			# 保存为简单CSV（只包含价格数据）
-			save_stock_data_to_csv(stock_data, "stock_simple.csv")
+			save_stock_data_to_csv(stock_data, START_DATE, END_DATE, CODE,PERIOD)
 		
 		except (ValueError, KeyError, json.JSONDecodeError) as e:
 			print(f"数据处理错误: {e}")
