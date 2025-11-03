@@ -5,16 +5,14 @@ import pandas as pd
 # import stock.tdx_indicator as tdx_indicator
 import tdx_indicator as tdx_indicator
 
-"""
-初始化client，用于传入后续的方法
-"""
 def init_create_client():
+    """
+    初始化client，用于传入后续的方法
+    """
     client = Quotes.factory(market='std')
     return client
 
-"""
-获取股票最新价格
-"""
+
 def get_cur_price(code, client=""):
     """
     获取指定股票的最新价格
@@ -36,6 +34,31 @@ def get_cur_price(code, client=""):
         # 如果没有数据，返回0
         return 0
 
+
+def get_cur_data(code, client=""):
+    """
+    获取指定股票的最新数据
+    调用示例：
+    open,close,high,low,vol,amount,year,month,day,hour,minute,datetime,volume = get_cur_data('000400',client)
+
+    参数:
+    code: 股票代码
+    client: 数据客户端
+
+    返回:
+    pandas.Series: 股票最新数据行，包含open, close, high, low, vol, amount等字段
+    """
+    # 获取最近1日的K线数据
+    df = client.bars(symbol=code, frequency='day', offset=1)
+    
+    if df is not None and not df.empty:
+        # 返回最新数据行
+        return df.iloc[-1]
+    else:
+        # 如果没有数据，返回空的Series
+        return pd.Series(dtype='object')
+    
+    
 """
 datestr = 2025-01-09
 获取最新月kdj 或 指定日期的kdj
@@ -231,5 +254,5 @@ def get_day_bbi(code,datestr="",client=""):
 
 # print(get_day_kdj("000400",client=client))
 # print(get_day_kdj("000400",client=client))
-# a = get_cur_price('000400',client)
+# a = get_cur_data('000400',client).get('year')
 # print(a)
