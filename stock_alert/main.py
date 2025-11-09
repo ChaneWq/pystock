@@ -1,6 +1,7 @@
 # main.py
 import task_manager
 
+
 def format_task(t):
     cond = t["condition"]
     cond_str = ""

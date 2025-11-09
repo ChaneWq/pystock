@@ -11,3 +11,4 @@ def get_current_price(stock_code: str, client) -> float:
 
 def init_client():
     return init_create_client()
+

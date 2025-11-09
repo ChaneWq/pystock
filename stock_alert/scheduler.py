@@ -32,6 +32,7 @@ def evaluate_condition(task, current_price: float) -> (bool, str):
     # else:
     return False, ""
 
+
 # scheduler.py
 def monitor_task(task, client):
     if not task.get("enabled", True):

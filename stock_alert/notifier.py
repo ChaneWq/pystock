@@ -20,6 +20,7 @@ def send_dingtalk_message(webhook_url, message):
         }
     }
 
+
     response = requests.post(url=webhook_url, data=json.dumps(data), headers=headers)
     if response.status_code == 200:
         response_data = response.json()

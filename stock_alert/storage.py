@@ -14,3 +14,4 @@ def load_tasks() -> List[Dict]:
 def save_tasks(tasks: List[Dict]) -> None:
     with open(TASKS_FILE, "w", encoding="utf-8") as f:
         json.dump(tasks, f, indent=2, ensure_ascii=False)
+
