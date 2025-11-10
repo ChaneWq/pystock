@@ -16,19 +16,19 @@ def evaluate_condition(task, current_price: float) -> (bool, str):
     if ctype == "ge":
         if current_price >= value:
             # return True, f"price >= {value}"
-            return True, f"p >= {value}"
+            return True, f"b >= {value}"
     elif ctype == "le":
         if current_price <= value:
             # return True, f"price <= {value}"
-            return True, f"p <= {value}"
+            return True, f"b <= {value}"
     elif ctype == "change_pct_up":
         if last_price is not None and (current_price - last_price)/last_price >= value/100.0:
             # return True, f"price ↑ ≥ {value}%"
-            return True, f"p ↑ ≥ {value}%"
+            return True, f"b ↑ ≥ {value}%"
     elif ctype == "change_pct_down":
         if last_price is not None and (last_price - current_price)/last_price >= value/100.0:
             # return True, f"price ↓ ≥ {value}%"
-            return True, f"p ↓ ≥ {value}%"
+            return True, f"b ↓ ≥ {value}%"
     # else:
     return False, ""
 
