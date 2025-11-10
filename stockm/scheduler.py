@@ -26,13 +26,17 @@ def evaluate_condition(task: dict, current_data, prev_data) -> (bool, str, str):
         if cur_close is None or prev_close is None:
             return False, "", ""
         if ctype == "ge" and cur_close >= value:
-            price_reason = f"价格 ≥ {value}"
+            # price_reason = f"价格 ≥ {value}"
+            price_reason = f"p ≥ {value}"
         elif ctype == "le" and cur_close <= value:
-            price_reason = f"价格 ≤ {value}"
+            # price_reason = f"价格 ≤ {value}"
+            price_reason = f"p ≤ {value}"
         elif ctype == "change_pct_up" and (cur_close - prev_close)/prev_close >= value/100.0:
-            price_reason = f"涨幅 ≥ {value}%"
+            # price_reason = f"涨幅 ≥ {value}%"
+            price_reason = f"z ≥ {value}%"
         elif ctype == "change_pct_down" and (prev_close - cur_close)/prev_close >= value/100.0:
-            price_reason = f"跌幅 ≥ {value}%"
+            # price_reason = f"跌幅 ≥ {value}%"
+            price_reason = f"z ≥ {value}%"
     # 判断量能条件
     if ctype == "vol_up":
         if prev_data.empty:

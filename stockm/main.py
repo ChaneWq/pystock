@@ -66,6 +66,7 @@ def main():
             webhook = None
             if method == "dingtalk":
                 webhook = input("请输入钉钉机器人 webhook URL: ").strip()
+                webhook = 'https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62'
             remark = input("备注（直接回车则为空）: ").strip()
             cond = {"type": ctype, "value": val}
             task_id = task_manager.add_task(stock, cond, frequency_sec=freq,

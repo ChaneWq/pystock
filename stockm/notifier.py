@@ -45,7 +45,8 @@ def send_dingtalk_message(webhook_url, message):
 
 def notify(task: dict, current_price: float, reason: str, vol_info: str = ""):
     remark = task.get("remark", "")
-    msg = f"~~~股票 {task['stock_code']} 触发提醒：当前价格 {current_price}，原因：{reason}"
+    # msg = f"~~~股票 {task['stock_code']} 触发提醒：当前价格 {current_price}，原因：{reason}"
+    msg = f"~~~s {task['stock_code']} cf：cp {current_price}，rson：{reason}"
     if vol_info:
         msg += f"；量能信息：{vol_info}"
     if remark:
