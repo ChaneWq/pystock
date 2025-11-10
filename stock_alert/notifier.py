@@ -37,7 +37,7 @@ def notify(task, current_price: float, reason: str):
     remark = task.get("remark", "")
     # 构造基础消息
     # base_msg = f"~~~股票 {task['stock_code']} 触发提醒：当前价格 {current_price}，原因：{reason}"
-    base_msg = f"~~~sto {task['stock_code']} notify：curp {current_price}，原因：{reason}"
+    base_msg = f"~~~sto1230-{task['stock_code']} notify：curp {current_price}，reso：{reason}"
     if remark:
         full_msg = base_msg + f"（备注：{remark}）"
     else:

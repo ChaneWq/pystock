@@ -34,7 +34,8 @@ def list_tasks_pretty():
     if not tasks:
         print("当前无监控任务。")
         return
-    print("任务ID | 股票代码 | 条件 | 频率 | 通知方式 | Webhook／URL | 已通知?")
+    # print("任务ID | 股票代码 | 条件 | 频率 | 通知方式 | Webhook／URL | 已通知?")
+    print("任务ID | s代码 | 条件 | 频率 | 通知方式 | Webhook／URL | 已通知?")
     print("-" * 120)
     for t in tasks:
         print(format_task(t))
