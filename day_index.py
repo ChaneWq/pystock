@@ -37,28 +37,53 @@ def get_cur_price(code, client=""):
 
 def get_cur_data(code, client=""):
     """
-    获取指定股票的最新数据
+    获取指定股票的最新数据和前一日数据
     调用示例：
-    open,close,high,low,vol,amount,year,month,day,hour,minute,datetime,volume = get_cur_data('000400',client)
+    cur_data, prev_data = get_cur_data('000400',client)
 
     参数:
     code: 股票代码
     client: 数据客户端
 
     返回:
-    pandas.Series: 股票最新数据行，包含open, close, high, low, vol, amount等字段
+    tuple: (最新数据, 前一日数据) 元组，每个元素都是包含open, close, high, low, vol, amount等字段的pandas.Series
+
+    使用案例：
+    cur_data, prev_data = get_cur_data('000400', client)
+    # 获取数据
+    cur_data, prev_data = get_cur_data('000400', client)
+
+    # 访问最新数据的各个字段
+    latest_close = cur_data['close']      # 最新收盘价
+    latest_open = cur_data['open']        # 最新开盘价
+    latest_high = cur_data['high']        # 最新最高价
+    latest_low = cur_data['low']          # 最新最低价
+
+    # 访问前一日数据的各个字段（注意前缀）
+    previous_close = prev_data['prev_close']  # 前一日收盘价
+    previous_open = prev_data['prev_open']    # 前一日开盘价
+    previous_high = prev_data['prev_high']    # 前一日最高价
     """
-    # 获取最近1日的K线数据
-    df = client.bars(symbol=code, frequency='day', offset=1)
-    
-    if df is not None and not df.empty:
-        # 返回最新数据行
-        return df.iloc[-1]
+    # 获取最近2日的K线数据
+    df = client.bars(symbol=code, frequency='day', offset=2)
+
+    if df is not None and len(df) >= 2:
+        # 返回最新数据行和前一日数据行
+        current_data = df.iloc[-1]
+        previous_data = df.iloc[-2]
+        # 为前一日数据添加前缀以区分字段名
+        previous_data = previous_data.add_prefix('prev_')
+        return current_data, previous_data
+    elif df is not None and len(df) == 1:
+        # 只有一天数据的情况，最新数据返回实际数据，前一日数据返回空Series
+        current_data = df.iloc[-1]
+        previous_data = pd.Series(dtype='object')
+        return current_data, previous_data
     else:
-        # 如果没有数据，返回空的Series
-        return pd.Series(dtype='object')
-    
-    
+        # 如果没有数据，返回两个空的Series
+        return pd.Series(dtype='object'), pd.Series(dtype='object')
+
+
 """
 datestr = 2025-01-09
 获取最新月kdj 或 指定日期的kdj
@@ -95,7 +120,7 @@ datestr = 2025-01-09
 def get_week_kdj(code,datestr="",client=""):
     # client = Quotes.factory(market='std')
     # 生成自定义的整数索引列
-    
+
     df = client.bars(symbol=code, frequency='week', offset=300)  # 获取最近300日东方财富k线
     custom_index = pd.RangeIndex(start=1, stop=len(df)+1, step=1)
     # 使用自定义的整数索引列作为索引
@@ -233,7 +258,7 @@ def get_day_bbi(code,datestr="",client=""):
 # get_week_kdj("000400")
 # get_day_kdj("000400","2025-01-08")
 # print(get_month_kdj("000400","2024-01-05")[-1])
-# client = init_create_client()
+client = init_create_client()
 # print(get_day_kdj("920108",client=client)[0])
 # print(get_day_kdj("600900","2025-08-21",client))
 # print(get_day_bbi("600900","2025-08-21",client))
@@ -255,4 +280,6 @@ def get_day_bbi(code,datestr="",client=""):
 # print(get_day_kdj("000400",client=client))
 # print(get_day_kdj("000400",client=client))
 # a = get_cur_data('000400',client).get('year')
-# print(a)
+cur_data, prev_data = get_cur_data('000400', client)
+prev_data = prev_data['prev_close']      # 最新收盘价
+print(prev_data)
