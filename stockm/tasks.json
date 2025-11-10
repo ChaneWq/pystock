@@ -1,18 +1,498 @@
 [
   {
-    "task_id": "32857ddc-bc1f-4647-a792-95338703988a",
-    "stock_code": "000400",
+    "task_id": "976f1b1e-3b7f-4379-ab38-feda72bb2446",
+    "stock_code": "600348",
     "condition": {
-      "type": "change_pct_up",
-      "value": 0.2
+      "type": "le",
+      "value": 8.66
     },
     "frequency_sec": 5,
     "notify_method": "dingtalk",
     "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
-    "last_price": 29.02,
-    "last_vol": 601322.0,
+    "last_price": null,
+    "last_vol": null,
     "enabled": true,
-    "notified": true,
+    "notified": false,
+    "remark": "cc-华"
+  },
+  {
+    "task_id": "beb6b490-301b-4fd2-9f39-eb580544d3cd",
+    "stock_code": "000915",
+    "condition": {
+      "type": "le",
+      "value": 34.5
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "7fce8168-baa9-4beb-ae84-35c7856e4910",
+    "stock_code": "002559",
+    "condition": {
+      "type": "le",
+      "value": 11.1
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "a17412a1-ac16-4602-a505-d399d836da77",
+    "stock_code": "603112",
+    "condition": {
+      "type": "le",
+      "value": 17.69
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "fe9ec0a3-58a0-4422-b992-31cf04ac6521",
+    "stock_code": "603161",
+    "condition": {
+      "type": "le",
+      "value": 14.11
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "eceb7ef1-a788-412c-8027-59975b147ba7",
+    "stock_code": "603568",
+    "condition": {
+      "type": "le",
+      "value": 23.1
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "4d048fcd-299f-4578-a6ad-01cb99f3f7a0",
+    "stock_code": "603991",
+    "condition": {
+      "type": "le",
+      "value": 66.05
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "703c4b9a-a007-408d-801d-7e35112bcf86",
+    "stock_code": "603997",
+    "condition": {
+      "type": "le",
+      "value": 14.06
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "477e1d97-3306-45ef-8343-f126601ed056",
+    "stock_code": "000800",
+    "condition": {
+      "type": "le",
+      "value": 7.26
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "6affed0d-7c96-4c63-bac6-38c68260d7fe",
+    "stock_code": "002879",
+    "condition": {
+      "type": "le",
+      "value": 17.98
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "81772bf9-7689-4f41-9313-569f1d0683af",
+    "stock_code": "002991",
+    "condition": {
+      "type": "le",
+      "value": 58.39
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "1693add5-a971-4b60-b4a5-2ed2c82b9444",
+    "stock_code": "600399",
+    "condition": {
+      "type": "le",
+      "value": 5.58
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "3db657ee-8436-4963-9391-2155fc76dbd4",
+    "stock_code": "600802",
+    "condition": {
+      "type": "le",
+      "value": 6.77
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "d6992e4f-03ef-4761-86f6-d523b64d2449",
+    "stock_code": "002921",
+    "condition": {
+      "type": "le",
+      "value": 16.28
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "bdeb2798-01fb-407c-ab8f-08030a6d46ee",
+    "stock_code": "000530",
+    "condition": {
+      "type": "le",
+      "value": 6.97
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "03a6dbe3-ddb3-4bf8-9624-052377d8f7f2",
+    "stock_code": "000531",
+    "condition": {
+      "type": "le",
+      "value": 7.15
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "b7768502-a933-4086-9080-e9d7bebb2f2c",
+    "stock_code": "000567",
+    "condition": {
+      "type": "le",
+      "value": 7.36
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "ddf55575-5bad-476b-a55b-d34bb686f5a8",
+    "stock_code": "000682",
+    "condition": {
+      "type": "le",
+      "value": 12.72
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "cd223223-56ed-4f53-888a-c0db17ff94a7",
+    "stock_code": "002108",
+    "condition": {
+      "type": "le",
+      "value": 4.68
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "71862ec0-dc34-451c-b286-2714a5fba7ff",
+    "stock_code": "002386",
+    "condition": {
+      "type": "le",
+      "value": 6.14
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "8d12a6e8-5be6-43f2-a284-3afcb78430e5",
+    "stock_code": "002434",
+    "condition": {
+      "type": "le",
+      "value": 9.18
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "61b6c8b7-2166-445e-a1aa-5f7c69038f32",
+    "stock_code": "002478",
+    "condition": {
+      "type": "le",
+      "value": 8.24
+    },
+    "frequency_sec": 7,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "194f4b79-4753-4dad-9cd9-18c3d1b0a09c",
+    "stock_code": "002498",
+    "condition": {
+      "type": "le",
+      "value": 3.89
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "acb36216-39d1-468c-94fa-54a1fe35ca65",
+    "stock_code": "002580",
+    "condition": {
+      "type": "le",
+      "value": 14.01
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "2c1b075a-1f98-48e7-a6d5-d56a02af79fd",
+    "stock_code": "002733",
+    "condition": {
+      "type": "le",
+      "value": 22.54
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "4740b43d-1bf7-4f8a-a78a-0fcb04360c43",
+    "stock_code": "000400",
+    "condition": {
+      "type": "le",
+      "value": 28.19
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "03dedc51-0172-4b3d-858c-f396b26ebf85",
+    "stock_code": "600406",
+    "condition": {
+      "type": "le",
+      "value": 24.77
+    },
+    "frequency_sec": 6,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "f1b34aad-ee8b-4012-bac8-ad9a2c6c7b4b",
+    "stock_code": "600089",
+    "condition": {
+      "type": "le",
+      "value": 22.78
+    },
+    "frequency_sec": 8,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "9ad07e17-8776-48a0-ae15-ba884fcae438",
+    "stock_code": "000009",
+    "condition": {
+      "type": "le",
+      "value": 10.84
+    },
+    "frequency_sec": 8,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "9a248980-1f3d-4099-a622-eb369335e218",
+    "stock_code": "000679",
+    "condition": {
+      "type": "le",
+      "value": 8.48
+    },
+    "frequency_sec": 7,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "8b3b7f97-cfd6-4d94-a9f2-d26f26b905d8",
+    "stock_code": "601877",
+    "condition": {
+      "type": "le",
+      "value": 32.61
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
     "remark": ""
   }
 ]
