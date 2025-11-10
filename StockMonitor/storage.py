@@ -5,6 +5,7 @@ from pathlib import Path
 
 TASKS_FILE = "tasks.json"
 
+
 def load_tasks() -> List[Dict]:
     path = Path(TASKS_FILE)
     if not path.exists():

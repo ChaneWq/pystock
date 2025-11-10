@@ -5,6 +5,7 @@ import storage
 import notifier
 from day_index import get_cur_data,init_create_client
 
+
 def evaluate_condition(task: dict, current_data, prev_data) -> (bool, str, str):
     """
     返回 (triggered, price_reason, vol_reason)

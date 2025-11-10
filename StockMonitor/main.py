@@ -47,6 +47,7 @@ def print_menu():
     print("6. 清空所有任务（需二次确认）")
     print("0. 退出")
 
+
 def main():
     while True:
         print_menu()

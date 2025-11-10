@@ -25,3 +25,4 @@ def get_cur_data(code: str, client=""):
         return current_data, previous_data
     else:
         return pd.Series(dtype='object'), pd.Series(dtype='object')
+

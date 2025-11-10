@@ -27,6 +27,7 @@ def add_task(stock_code: str, condition: Dict, frequency_sec: int = None,
     storage.save_tasks(tasks)
     return task_id
 
+
 def remove_task(task_id: str) -> bool:
     tasks = storage.load_tasks()
     new_tasks = [t for t in tasks if t["task_id"] != task_id]
