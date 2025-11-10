@@ -1,0 +1,18 @@
+[
+  {
+    "task_id": "32857ddc-bc1f-4647-a792-95338703988a",
+    "stock_code": "000400",
+    "condition": {
+      "type": "change_pct_up",
+      "value": 0.2
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": 29.02,
+    "last_vol": 601322.0,
+    "enabled": true,
+    "notified": true,
+    "remark": ""
+  }
+]
