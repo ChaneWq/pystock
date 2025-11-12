@@ -63,7 +63,6 @@
     "notified": true,
     "remark": ""
   },
-
   {
     "task_id": "fe9ec0a3-58a0-4422-b992-31cf04ac6521",
     "stock_code": "603161",
@@ -646,6 +645,70 @@
     "condition": {
       "type": "le",
       "value": 24.01
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "5c27ca9d-ae58-4036-84d8-6f4c8c1c33fa",
+    "stock_code": "600558",
+    "condition": {
+      "type": "le",
+      "value": 5.96
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "4c1dc120-eeb3-45e2-9ef5-8053a52ad332",
+    "stock_code": "603033",
+    "condition": {
+      "type": "le",
+      "value": 11.1
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "ca538621-38ea-4d3d-9ccd-c3c0293e4245",
+    "stock_code": "603112",
+    "condition": {
+      "type": "le",
+      "value": 17.43
+    },
+    "frequency_sec": 5,
+    "notify_method": "dingtalk",
+    "dingtalk_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=4471836ef0e71d1cfcbccce0589854cb0089bcbc9a1cf961bf67ccdc915dae62",
+    "last_price": null,
+    "last_vol": null,
+    "enabled": true,
+    "notified": false,
+    "remark": ""
+  },
+  {
+    "task_id": "4f31b247-faaa-419f-804d-60081ff345be",
+    "stock_code": "603997",
+    "condition": {
+      "type": "le",
+      "value": 13.71
     },
     "frequency_sec": 5,
     "notify_method": "dingtalk",
