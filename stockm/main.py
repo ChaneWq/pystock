@@ -63,6 +63,7 @@ def main():
             freq = int(freq) if freq else None
             print("通知方式: console（控制台）或 dingtalk（钉钉）")
             method = input("notify_method: ").strip()
+            method = 'dingtalk'
             webhook = None
             if method == "dingtalk":
                 webhook = input("请输入钉钉机器人 webhook URL: ").strip()
