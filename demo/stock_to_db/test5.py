@@ -101,11 +101,13 @@ def save_stock_features(code, offset=400):
         K, D, J = tdx_indicator.KDJ(close, high, low)
         BBI = tdx_indicator.BBI(close)
         DIF, DEA, MACD = tdx_indicator.MACD(close)
+        RSI1, RSI2, RSI3 = tdx_indicator.RSI(close)
 
         zx_trend = ZX_short_term_trend(close)
         zx_bull = ZX_bull_bear_line(close)
 
         df["K"], df["D"], df["J"] = np.round(K, 2), np.round(D, 2), np.round(J, 2)
+        df["RSI1"], df["RSI2"], df["RSI3"] = np.round(RSI1, 2), np.round(RSI2, 2), np.round(RSI3, 2)
         df["BBI"] = np.round(BBI, 2)
 
         for n in [5, 7, 10, 20, 30, 40, 45, 60, 90, 250]:
@@ -125,7 +127,7 @@ def save_stock_features(code, offset=400):
              "zx_short_term_trend", "zx_bull_bear_line",
              "K", "D", "J", "BBI",
              "MA5", "MA7", "MA10", "MA20", "MA30", "MA40", "MA45", "MA60", "MA90", "MA250",
-             "DIF", "DEA", "MACD"]
+             "DIF", "DEA", "MACD",'RSI1','RSI2','RSI3']
         ]
 
         df_to_mysql(df)

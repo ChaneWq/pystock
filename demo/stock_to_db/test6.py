@@ -1,3 +1,5 @@
+import datetime
+
 import pandas as pd
 import numpy as np
 import pymysql
@@ -99,11 +101,14 @@ def save_stock_features(code, client, offset=400):
         K, D, J = tdx_indicator.KDJ(close, high, low)
         BBI = tdx_indicator.BBI(close)
         DIF, DEA, MACD = tdx_indicator.MACD(close)
+        RSI1, RSI2, RSI3 = tdx_indicator.RSI(close)
+
 
         zx_trend = ZX_short_term_trend(close)
         zx_bull = ZX_bull_bear_line(close)
 
         df["K"], df["D"], df["J"] = np.round(K, 2), np.round(D, 2), np.round(J, 2)
+        df["RSI1"], df["RSI2"], df["RSI3"] = np.round(RSI1, 2), np.round(RSI2, 2), np.round(RSI3, 2)
         df["BBI"] = np.round(BBI, 2)
 
         for n in [5, 7, 10, 20, 30, 40, 45, 60, 90, 250]:
@@ -122,7 +127,7 @@ def save_stock_features(code, client, offset=400):
              "zx_short_term_trend", "zx_bull_bear_line",
              "K", "D", "J", "BBI",
              "MA5", "MA7", "MA10", "MA20", "MA30", "MA40", "MA45", "MA60", "MA90", "MA250",
-             "DIF", "DEA", "MACD"]
+             "DIF", "DEA", "MACD", 'RSI1', 'RSI2', 'RSI3']
         ]
 
         df_to_mysql(df)
@@ -147,16 +152,26 @@ def get_all_codes():
 
 # ---------------- 每个线程只创建一个 client ---------------- #
 
+# def worker(codes, offset):
+#     """
+#     单线程：创建一个 client 后处理多个 code
+#     """
+#     client = Quotes.factory(market="std")   # 线程只创建一次
+#     print('*'*100)
+#     results = []
+#     for code in codes:
+#         results.append(save_stock_features(code, client, offset))
+#     return results
+
 def worker(codes, offset):
-    """
-    单线程：创建一个 client 后处理多个 code
-    """
-    client = Quotes.factory(market="std")   # 线程只创建一次
-    print('*'*100)
+    client = Quotes.factory(market="std")
     results = []
     for code in codes:
-        results.append(save_stock_features(code, client, offset))
+        r = save_stock_features(code, client, offset)
+        print(f"[线程 {threading.get_ident()}] {r[0]} → {r[1]}")   # ⭐实时打印
+        results.append(r)
     return results
+
 
 
 # ---------------- 多线程执行 ---------------- #
@@ -196,6 +211,8 @@ def run_all_codes(offset=400, max_workers=5):
 
 # ---------------- 运行 ---------------- #
 
-run_all_codes(offset=1800, max_workers=5)
+run_all_codes(offset=1800, max_workers=6)
 # codes = get_all_codes()
 # print(codes)
+import time
+print(datetime.time)
