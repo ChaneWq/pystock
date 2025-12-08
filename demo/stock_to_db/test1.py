@@ -116,6 +116,8 @@ ma60 = tdx_indicator.MA(close,60)
 ma90 = tdx_indicator.MA(close,90)
 ma250 = tdx_indicator.MA(close,250)
 DIF,DEA,MACD = tdx_indicator.MACD(close)
+RSI1,RSI2,RSI3 = tdx_indicator.RSI(close)
+
 # Calculate 知行短期趋势线
 zx_trend = ZX_short_term_trend(close)
 
@@ -139,6 +141,9 @@ ma250 = np.round(ma250, 2)
 DIF = np.round(DIF, 2)
 DEA = np.round(DEA, 2)
 MACD = np.round(MACD, 2)
+RSI1 = np.round(RSI1, 2)
+RSI2 = np.round(RSI2, 2)
+RSI3 = np.round(RSI3, 2)
 zx_trend = np.round(zx_trend, 2)
 zx_bull_bear = np.round(zx_bull_bear, 2)
 
@@ -166,6 +171,9 @@ df['MA250'] = ma250
 df['DIF'] = DIF
 df['DEA'] = DEA
 df['MACD'] = MACD
+df['RSI1'] = RSI1
+df['RSI2'] = RSI2
+df['RSI3'] = RSI3
 df['zx_short_term_trend'] = zx_trend
 df['zx_bull_bear_line'] = zx_bull_bear
 df['trade_date'] = pd.to_datetime(df[['year', 'month', 'day']])
@@ -173,5 +181,5 @@ df['code'] = code
 
 print(df.columns)
 
-df = df[['code','trade_date','open','close','high','low','vol','amount','zx_short_term_trend','zx_bull_bear_line','K','D','J','BBI','MA5','MA7','MA10','MA20','MA30','MA40','MA45','MA60','MA90','MA250','DIF','DEA','MACD']]
+df = df[['code','trade_date','open','close','high','low','vol','amount','zx_short_term_trend','zx_bull_bear_line','K','D','J','BBI','MA5','MA7','MA10','MA20','MA30','MA40','MA45','MA60','MA90','MA250','DIF','DEA','MACD','RSI1','RSI2','RSI3']]
 df_to_mysql(df, table_name="stock_features")
