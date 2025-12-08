@@ -84,6 +84,36 @@ def get_cur_data(code, client=""):
         return pd.Series(dtype='object'), pd.Series(dtype='object')
 
 
+def get_price_and_change_percent(code, client):
+    """
+    获取指定股票的当前价格和涨跌幅
+
+    参数:
+    code: 股票代码
+    client: 数据客户端
+
+    返回:
+    tuple: (当前价格, 涨跌幅)
+    """
+    # 获取当前和前一日数据
+    cur_data, prev_data = get_cur_data(code, client)
+    
+    if cur_data.empty or prev_data.empty:
+        return 0, 0
+    
+    # 获取当前收盘价和前一日收盘价
+    current_price = cur_data['close']
+    previous_close = prev_data['prev_close']
+    
+    # 计算涨跌幅
+    if previous_close != 0:
+        change_percent = (current_price - previous_close) / previous_close * 100
+    else:
+        change_percent = 0
+    
+    return current_price, change_percent
+
+
 """
 datestr = 2025-01-09
 获取最新月kdj 或 指定日期的kdj
@@ -258,7 +288,7 @@ def get_day_bbi(code,datestr="",client=""):
 # get_week_kdj("000400")
 # get_day_kdj("000400","2025-01-08")
 # print(get_month_kdj("000400","2024-01-05")[-1])
-client = init_create_client()
+# client = init_create_client()
 # print(get_day_kdj("920108",client=client)[0])
 # print(get_day_kdj("600900","2025-08-21",client))
 # print(get_day_bbi("600900","2025-08-21",client))
@@ -280,6 +310,11 @@ client = init_create_client()
 # print(get_day_kdj("000400",client=client))
 # print(get_day_kdj("000400",client=client))
 # a = get_cur_data('000400',client).get('year')
-cur_data, prev_data = get_cur_data('000400', client)
-prev_data = prev_data['prev_close']      # 最新收盘价
-print(prev_data)
+# cur_data, prev_data = get_cur_data('000400', client)
+# prev_data = prev_data['prev_close']      # 最新收盘价
+# print(prev_data)
+
+
+# client = init_create_client()
+# price, change = get_price_and_change_percent('000400', client)
+# print(f"当前价格: {price}, 涨跌幅: {change:.2f}%")
