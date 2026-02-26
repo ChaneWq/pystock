@@ -1,5 +1,6 @@
 import pandas as pd
 import pymysql
+import mysql.connector
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
@@ -12,11 +13,11 @@ import pymysql
 # ----------------【通用 MySQL 写入函数】---------------- #
 
 def df_to_mysql(df, table_name="stock_features",
-                mysql_host="localhost",
-                mysql_user="root",
-                mysql_password="root",
-                mysql_db="stock",
-                port=3306):
+                mysql_host="10.1.3.40",
+                mysql_user="gzqp_bigdata_prod",
+                mysql_password="bg3c1jqy_FGX.m5#mdz",
+                mysql_db="gzqp_bigdata_dev",
+                port=9030):
     """
     通用 df 写入 MySQL（自动建表 + 自动类型转换 + 自动防重）
     """
@@ -54,12 +55,13 @@ def df_to_mysql(df, table_name="stock_features",
     create_sql += "PRIMARY KEY (`code`, `trade_date`));"
 
     # 执行建表
-    conn = pymysql.connect(
+    # conn = pymysql.connect(
+    conn = mysql.connector.connect(
         host=mysql_host, user=mysql_user, password=mysql_password,
-        database=mysql_db, charset="utf8mb4"
+        database=mysql_db,port=port, charset="utf8mb4"
     )
     cursor = conn.cursor()
-    cursor.execute(create_sql)
+    # cursor.execute(create_sql)
     conn.commit()
     cursor.close()
     conn.close()
@@ -147,23 +149,26 @@ def save_stock_features(code,client, offset=400):
 
 # ---------------- 获取全部 code ---------------- #
 
-def get_all_codes(mysql_host="localhost",
-                  mysql_user="root",
-                  mysql_password="root",
-                  mysql_db="stock",
-                  port=3306):
+def get_all_codes(mysql_host="10.1.3.40",
+                  mysql_user="gzqp_bigdata_prod",
+                  mysql_password="bg3c1jqy_FGX.m5#mdz",
+                  mysql_db="gzqp_bigdata_dev",
+                  port=9030
+                  ):
     """
     从 stock_name 表读取所有股票 code
     """
-    conn = pymysql.connect(
+    # conn = pymysql.connect(
+    conn = mysql.connector.connect(
         host=mysql_host,
         user=mysql_user,
         password=mysql_password,
         database=mysql_db,
+        port=port,
         charset='utf8mb4'
     )
     cursor = conn.cursor()
-    cursor.execute("SELECT code FROM stock_name;")
+    cursor.execute("SELECT code FROM sc;")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
