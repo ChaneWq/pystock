@@ -26,12 +26,19 @@ def main():
     args = parser.parse_args()
 
     # 数据库配置（固定）
+    # db_config = {
+    #     'host': 'localhost',
+    #     'port': 3306,
+    #     'user': 'root',
+    #     'password': 'root',
+    #     'database': 'stock'
+    # }
     db_config = {
-        'host': 'localhost',
-        'port': 3306,
-        'user': 'root',
-        'password': 'root',
-        'database': 'stock'
+        'host': '10.1.3.40',
+        'port': 9030,
+        'user': 'gzqp_bigdata_prod',
+        'password': 'bg3c1jqy_FGX.m5#mdz',
+        'database': 'gzqp_bigdata_dev'
     }
 
     # 固定参数

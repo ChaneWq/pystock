@@ -12,7 +12,7 @@ def init_create_client():
     client = Quotes.factory(market='std')
     return client
 client = init_create_client()
-code = '600009'
+code = '600702'
 
 df = client.bars(symbol=code, frequency='day', offset=1000)
 custom_index = pd.RangeIndex(start=1, stop=len(df) + 1, step=1)
