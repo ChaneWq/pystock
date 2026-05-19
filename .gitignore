@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 数据文件
+minute_volume_ratio/data/
+stock_strategy/data/
+n_day_price_change/*.xls
+n_day_price_change/*.xlsx
+stock_alert/tasks.json
+stockm/tasks.json
+
+# 临时文件
+tmp/
+demo/tmp/
+
+# 环境配置
+.env
+*.egg-info/
+dist/
+build/

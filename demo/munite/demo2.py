@@ -3,7 +3,8 @@ import pandas as pd
 
 client = init_create_client()
 code = '000400'
-date = '20260306'
+date = '20260420'
+# date = '20150120'
 # df = client.minutes(symbol=code,date='20230705')
 df = client.minutes(symbol=code,date=date)
 
