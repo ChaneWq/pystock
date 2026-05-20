@@ -45,7 +45,11 @@ def get_minute_data(code, date, client):
 
 def get_prev_n_day_vol(code, n=5, client=None):
     """
-    获取指定股票过去n个交易日的日线成交量
+    获取指定股票过去n个交易日的日线成交量及昨收价
+
+    获取 n+1 日数据：
+      vol_list = 前 n 日成交量（用于计算分钟均量）
+      prev_close = 第 n 日收盘价（目标日期前一交易日的收盘价，即昨收价）
 
     参数:
         code: 股票代码
@@ -53,16 +57,21 @@ def get_prev_n_day_vol(code, n=5, client=None):
         client: 通达信客户端
 
     返回:
-        list: 过去n个交易日的成交量列表
+        dict: {'vol_list': list, 'prev_close': float}
+            vol_list: 过去n个交易日的成交量列表
+            prev_close: 昨收价（目标日期前一交易日收盘价）
     """
-    df = client.bars(symbol=code, frequency='day', offset=n)
+    df = client.bars(symbol=code, frequency='day', offset=n + 1)
     if df is None or df.empty:
         print(f"[Fetcher] 未获取到 {code} 的日线数据")
-        return []
+        return None
 
-    # 取最近n条
-    vol_list = df['vol'].tolist()[-n:]
-    return vol_list
+    # 前 n 日成交量（用于计算分钟均量）
+    rows = df.iloc[-(n + 1):]
+    vol_list = rows['vol'].tolist()[:n]
+    # 第 n 日收盘价 = 昨收价
+    prev_close = float(rows['close'].iloc[n - 1])
+    return {'vol_list': vol_list, 'prev_close': prev_close}
 
 
 def _get_trade_hour_minute(index):

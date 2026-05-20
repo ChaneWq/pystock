@@ -20,6 +20,8 @@ if __name__ == "__main__":
     parser.add_argument("--csv", help="导出CSV到data目录", action="store_true")
     parser.add_argument("--until", help="截至时间，格式 HH:MM，模拟盘中该时间点运行，如 --until 10:30", default="")
     parser.add_argument("--no_filter", help="不过滤创业板(300/301)、科创板(688)、北交所(9开头)等", action="store_true", default=False)
+    parser.add_argument("--change_min", help="涨幅下限(%%)，默认-100不限", type=float, default=-100)
+    parser.add_argument("--change_max", help="涨幅上限(%%)，默认100不限", type=float, default=100)
 
     # vp_sync 策略参数
     parser.add_argument("--window", help="[vp_sync] 滑动窗口大小（分钟），默认5", type=int, default=5)
@@ -127,7 +129,8 @@ if __name__ == "__main__":
         strategy_kwargs = {}
 
     # 扫描
-    results = scan(codes, date, args.strategy, args.n, until_hour=until_hour, until_minute=until_minute, **strategy_kwargs)
+    results = scan(codes, date, args.strategy, args.n, until_hour=until_hour, until_minute=until_minute,
+                   change_min=args.change_min, change_max=args.change_max, **strategy_kwargs)
 
     # 输出
     print_results(results, args.strategy, date)

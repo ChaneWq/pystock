@@ -32,12 +32,12 @@ def run_single(code, date='', n=5, export_csv=False):
         return
 
     # Step 2: 获取过去n日日线成交量
-    day_vol_list = get_prev_n_day_vol(code, n, client)
-    if not day_vol_list:
+    day_data = get_prev_n_day_vol(code, n, client)
+    if not day_data:
         return
 
     # Step 3: 计算每分钟均量
-    avg_vol = calc_avg_vol_per_minute(day_vol_list, n)
+    avg_vol = calc_avg_vol_per_minute(day_data['vol_list'], n)
 
     # Step 4: 计算量比
     result_df = calc_volume_ratio(minute_df, avg_vol)
