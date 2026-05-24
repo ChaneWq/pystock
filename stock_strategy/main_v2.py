@@ -9,6 +9,7 @@ from scanner import scan, print_results, export_results, export_codes
 # ===== 在这里修改默认参数 =====
 CONFIG = {
     # 通用参数
+    'strategy': 'vr_slope',          # 策略: vr_slope / vr_anomaly
     'file': 'codes.txt',             # 股票代码文件
     'date': None,                    # 日期 YYYYMMDD，None=今天
     'n': 5,                          # 过去n个交易日
@@ -26,6 +27,14 @@ CONFIG = {
     'vr_slope_price_up': True,       # 窗口首尾价格是否不跌
     'vr_slope_min_hits': 1,          # 最少命中窗口数
     'vr_slope_merge_gap': 2,         # 命中窗口合并间隔
+
+    # vr_anomaly 策略参数
+    'anomaly_window': 3,             # 每段窗口大小（分钟）
+    'anomaly_steep': 5,              # 显性异动角度阈值（度）
+    'anomaly_turn': 8,               # 隐性异动角度差阈值（度）
+    'anomaly_price_up': True,        # 后窗首尾价格是否不跌
+    'anomaly_min_hits': 1,           # 最少命中次数
+    'anomaly_merge_gap': 2,          # 命中合并间隔
 }
 # ================================
 
@@ -92,35 +101,53 @@ def main():
         sys.exit(1)
 
     # 构建策略参数
-    strategy_kwargs = {
-        'window': cfg['vr_slope_window'],
-        'vr_slope': cfg['vr_slope'],
-        'vr_up': cfg['vr_up'],
-        'price_up': cfg['vr_slope_price_up'],
-        'min_hits': cfg['vr_slope_min_hits'],
-        'merge_gap': cfg['vr_slope_merge_gap'],
-    }
-    print("策略: vr_slope  日期: %s  股票数: %d  窗口: %d分钟  量比斜率: %.0f度  量比增加: %s  价格上涨: %s  最少命中: %d  合并间隔: %d%s" % (
-        date, len(codes), cfg['vr_slope_window'], cfg['vr_slope'], cfg['vr_up'],
-        cfg['vr_slope_price_up'], cfg['vr_slope_min_hits'], cfg['vr_slope_merge_gap'],
-        "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
+    strategy_id = cfg['strategy']
+    if strategy_id == 'vr_slope':
+        strategy_kwargs = {
+            'window': cfg['vr_slope_window'],
+            'vr_slope': cfg['vr_slope'],
+            'vr_up': cfg['vr_up'],
+            'price_up': cfg['vr_slope_price_up'],
+            'min_hits': cfg['vr_slope_min_hits'],
+            'merge_gap': cfg['vr_slope_merge_gap'],
+        }
+        print("策略: vr_slope  日期: %s  股票数: %d  窗口: %d分钟  量比斜率: %.0f度  量比增加: %s  价格上涨: %s  最少命中: %d  合并间隔: %d%s" % (
+            date, len(codes), cfg['vr_slope_window'], cfg['vr_slope'], cfg['vr_up'],
+            cfg['vr_slope_price_up'], cfg['vr_slope_min_hits'], cfg['vr_slope_merge_gap'],
+            "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
+    elif strategy_id == 'vr_anomaly':
+        strategy_kwargs = {
+            'window': cfg['anomaly_window'],
+            'steep': cfg['anomaly_steep'],
+            'turn': cfg['anomaly_turn'],
+            'price_up': cfg['anomaly_price_up'],
+            'min_hits': cfg['anomaly_min_hits'],
+            'merge_gap': cfg['anomaly_merge_gap'],
+        }
+        print("策略: vr_anomaly  日期: %s  股票数: %d  窗口: %d分钟  显性角度: %.0f度  隐性角度差: %.0f度  价格不跌: %s  最少命中: %d  合并间隔: %d%s" % (
+            date, len(codes), cfg['anomaly_window'], cfg['anomaly_steep'], cfg['anomaly_turn'],
+            cfg['anomaly_price_up'], cfg['anomaly_min_hits'], cfg['anomaly_merge_gap'],
+            "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
+    else:
+        print("未知策略: %s" % strategy_id)
+        sys.exit(1)
 
     # 扫描
-    results = scan(codes, date, 'vr_slope', cfg['n'],
+    results = scan(codes, date, strategy_id, cfg['n'],
                    until_hour=until_hour, until_minute=until_minute,
                    change_min=cfg['change_min'], change_max=cfg['change_max'],
                    **strategy_kwargs)
 
     # 输出
-    print_results(results, 'vr_slope', date)
+    print_results(results, strategy_id, date)
 
     # 导出
     if cfg.get('csv', False):
-        export_results(results, 'vr_slope', date)
+        export_results(results, strategy_id, date)
 
     # 导出代码
     if cfg.get('output', False):
-        export_codes(results, 'vr_slope', date)
+        export_codes(results, strategy_id, date)
 
 
 if __name__ == "__main__":

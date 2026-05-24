@@ -43,34 +43,54 @@ def get_minute_data(code, date, client):
     return df
 
 
-def get_prev_n_day_vol(code, n=5, client=None):
+def get_prev_n_day_vol(code, n=5, client=None, date=None):
     """
     获取指定股票过去n个交易日的日线成交量及昨收价
 
-    获取 n+1 日数据：
-      vol_list = 前 n 日成交量（用于计算分钟均量）
-      prev_close = 第 n 日收盘价（目标日期前一交易日的收盘价，即昨收价）
+    获取足够多的日线数据，根据目标日期定位：
+      vol_list = 目标日期前 n 日成交量（用于计算分钟均量）
+      prev_close = 目标日期前一交易日的收盘价（即昨收价）
 
     参数:
         code: 股票代码
         n: 交易日天数，默认5
         client: 通达信客户端
+        date: 目标日期，如 '20260514'，None则取最新
 
     返回:
         dict: {'vol_list': list, 'prev_close': float}
             vol_list: 过去n个交易日的成交量列表
             prev_close: 昨收价（目标日期前一交易日收盘价）
     """
-    df = client.bars(symbol=code, frequency='day', offset=n + 1)
+    # 多取一些数据确保能覆盖目标日期
+    offset = n + 50 if date else n + 1
+    df = client.bars(symbol=code, frequency='day', offset=offset)
     if df is None or df.empty:
         print(f"[Fetcher] 未获取到 {code} 的日线数据")
         return None
 
-    # 前 n 日成交量（用于计算分钟均量）
-    rows = df.iloc[-(n + 1):]
-    vol_list = rows['vol'].tolist()[:n]
-    # 第 n 日收盘价 = 昨收价
-    prev_close = float(rows['close'].iloc[n - 1])
+    if date:
+        # 根据目标日期定位（只比较日期部分，忽略时间）
+        target_date = pd.to_datetime(date, format='%Y%m%d').date()
+        df['dt_parsed'] = pd.to_datetime(df['datetime']).dt.date
+        mask = df['dt_parsed'] <= target_date
+        if not mask.any():
+            print(f"[Fetcher] 日线数据不包含 {date} 之前的数据")
+            return None
+        target_idx = df[mask].index[-1]
+        # 取目标日期及之前 n+1 行
+        loc = df.index.get_loc(target_idx)
+        if loc < n:
+            print(f"[Fetcher] {code} 在 {date} 之前数据不足 {n} 日")
+            return None
+        rows = df.iloc[loc - n:loc + 1]
+        vol_list = rows['vol'].tolist()[:n]
+        prev_close = float(rows['close'].iloc[n - 1])
+    else:
+        rows = df.iloc[-(n + 1):]
+        vol_list = rows['vol'].tolist()[:n]
+        prev_close = float(rows['close'].iloc[n - 1])
+
     return {'vol_list': vol_list, 'prev_close': prev_close}
 
 

@@ -78,7 +78,7 @@ def _scan_single(code, date, client, strategy_fn, n, until_hour=None, until_minu
             return None
 
     # 获取过去n日成交量
-    day_data = get_prev_n_day_vol(code, n, client)
+    day_data = get_prev_n_day_vol(code, n, client, date=date)
     if not day_data:
         return None
 
@@ -115,6 +115,14 @@ def print_results(results, strategy_id, date):
 
     print(f"\n策略: {strategy_id}  日期: {date}  命中: {len(results)}只")
 
+    if strategy_id == 'vr_anomaly':
+        _print_anomaly(results, strategy_id, date)
+    else:
+        _print_slope(results, strategy_id, date)
+
+
+def _print_slope(results, strategy_id, date):
+    """vr_slope 策略输出"""
     print("-" * 140)
     print(f"{'排名':>4}  {'代码':<8}  {'名称':<8}  {'综合评分':>8}  {'量比斜率':>8}  {'命中窗口':>8}  {'涨幅':>8}  {'价格斜率':>10}  {'命中时段'}")
     print("-" * 140)
@@ -126,6 +134,21 @@ def print_results(results, strategy_id, date):
               f"{r['hit_windows']:>4}/{r['total_windows']}  {chg_str:>8}  {r['price_slope']:>10.6f}  {r['hit_periods']}")
 
     print("-" * 140)
+
+
+def _print_anomaly(results, strategy_id, date):
+    """vr_anomaly 策略输出"""
+    print("-" * 150)
+    print(f"{'排名':>4}  {'代码':<8}  {'名称':<8}  {'综合评分':>8}  {'显性':>4}  {'隐性':>4}  {'最大角度差':>8}  {'涨幅':>8}  {'命中时段'}")
+    print("-" * 150)
+
+    for i, r in enumerate(results):
+        chg = r['change_pct']
+        chg_str = f"+{chg:.2f}%" if chg >= 0 else f"{chg:.2f}%"
+        print(f"{i+1:>4}  {r['code']:<8}  {r['name']:<8}  {r['score']:>8.4f}  {r['steep_hits']:>4}  {r['turn_hits']:>4}  "
+              f"{r['max_angle_diff']:>7.1f}°  {chg_str:>8}  {r['hit_periods']}")
+
+    print("-" * 150)
 
 
 def export_results(results, strategy_id, date):
@@ -141,19 +164,36 @@ def export_results(results, strategy_id, date):
     output_file = os.path.join(data_dir, f"{strategy_id}_{date}.csv")
 
     # 重命名列并指定顺序
-    col_order = ['代码', '名称', '涨幅%', '量比斜率(度)', '综合评分', '命中窗口', '总窗口', '价格斜率', '命中时段', '日期']
-    rename_map = {
-        'score': '综合评分',
-        'avg_vr_slope_deg': '量比斜率(度)',
-        'hit_windows': '命中窗口',
-        'total_windows': '总窗口',
-        'price_slope': '价格斜率',
-        'hit_periods': '命中时段',
-        'name': '名称',
-        'code': '代码',
-        'date': '日期',
-        'change_pct': '涨幅%',
-    }
+    if strategy_id == 'vr_anomaly':
+        col_order = ['代码', '名称', '涨幅%', '显性命中', '隐性命中', '最大角度差', '综合评分', '命中窗口', '总窗口', '价格斜率', '命中时段', '日期']
+        rename_map = {
+            'score': '综合评分',
+            'steep_hits': '显性命中',
+            'turn_hits': '隐性命中',
+            'max_angle_diff': '最大角度差',
+            'hit_windows': '命中窗口',
+            'total_windows': '总窗口',
+            'price_slope': '价格斜率',
+            'hit_periods': '命中时段',
+            'name': '名称',
+            'code': '代码',
+            'date': '日期',
+            'change_pct': '涨幅%',
+        }
+    else:
+        col_order = ['代码', '名称', '涨幅%', '量比斜率(度)', '综合评分', '命中窗口', '总窗口', '价格斜率', '命中时段', '日期']
+        rename_map = {
+            'score': '综合评分',
+            'avg_vr_slope_deg': '量比斜率(度)',
+            'hit_windows': '命中窗口',
+            'total_windows': '总窗口',
+            'price_slope': '价格斜率',
+            'hit_periods': '命中时段',
+            'name': '名称',
+            'code': '代码',
+            'date': '日期',
+            'change_pct': '涨幅%',
+        }
     df = pd.DataFrame(results)
     df = df.rename(columns=rename_map)
     df = df[col_order]

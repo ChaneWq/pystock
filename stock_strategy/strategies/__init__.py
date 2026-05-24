@@ -1,8 +1,10 @@
 # strategies/__init__.py - 策略注册
 from strategies.vr_slope import evaluate as vr_slope_evaluate
+from strategies.vr_anomaly import evaluate as vr_anomaly_evaluate
 
 STRATEGIES = {
     'vr_slope': vr_slope_evaluate,
+    'vr_anomaly': vr_anomaly_evaluate,
 }
 
 
