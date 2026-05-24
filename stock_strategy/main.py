@@ -22,6 +22,7 @@ if __name__ == "__main__":
     parser.add_argument("--no_filter", help="不过滤创业板(300/301)、科创板(688)、北交所(9开头)等", action="store_true", default=False)
     parser.add_argument("--change_min", help="涨幅下限(%%)，默认-100不限", type=float, default=-100)
     parser.add_argument("--change_max", help="涨幅上限(%%)，默认100不限", type=float, default=100)
+    parser.add_argument("-p", "--print_codes", help="额外打印命中股票代码和名称", action="store_true")
 
     # vr_slope 策略参数
     parser.add_argument("--vr_slope_window", help="[vr_slope] 窗口大小（分钟），默认3", type=int, default=3)
@@ -131,3 +132,10 @@ if __name__ == "__main__":
     # 导出代码
     if args.output:
         export_codes(results, strategy_id, date)
+
+    # 额外打印命中股票代码和名称
+    if args.print_codes and results:
+        print("\n========== 命中股票 ==========\n\n\n")
+        for r in results:
+            print("%s  %s" % (r['code'], r['name']))
+        print("\n\n")
