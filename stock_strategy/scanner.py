@@ -10,6 +10,16 @@ from minute_volume_ratio.calculator import calc_avg_vol_per_minute, calc_volume_
 from strategies import get_strategy
 
 
+def _load_stock_names():
+    """加载股票名称对照表"""
+    name_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                             'data', '全部Ａ股个股.csv')
+    if not os.path.exists(name_file):
+        return {}
+    df = pd.read_csv(name_file, dtype={'代码': str}, encoding='utf-8')
+    return dict(zip(df['代码'], df['名称']))
+
+
 def scan(codes, date, strategy_id, n=5, until_hour=None, until_minute=None, change_min=-100, change_max=100, **strategy_kwargs):
     """
     扫描股票列表，按策略评分
@@ -30,13 +40,15 @@ def scan(codes, date, strategy_id, n=5, until_hour=None, until_minute=None, chan
     """
     strategy_fn = get_strategy(strategy_id)
     client = init_create_client()
+    stock_names = _load_stock_names()
     results = []
 
     total = len(codes)
     for i, code in enumerate(codes):
         print(f"\r扫描中: {i+1}/{total} {code}", end='', flush=True)
         try:
-            result = _scan_single(code, date, client, strategy_fn, n, until_hour, until_minute, change_min, change_max, **strategy_kwargs)
+            result = _scan_single(code, date, client, strategy_fn, n, until_hour, until_minute,
+                                  change_min, change_max, stock_names, **strategy_kwargs)
             if result is not None:
                 results.append(result)
         except Exception as e:
@@ -49,7 +61,8 @@ def scan(codes, date, strategy_id, n=5, until_hour=None, until_minute=None, chan
     return results
 
 
-def _scan_single(code, date, client, strategy_fn, n, until_hour=None, until_minute=None, change_min=-100, change_max=100, **strategy_kwargs):
+def _scan_single(code, date, client, strategy_fn, n, until_hour=None, until_minute=None,
+                 change_min=-100, change_max=100, stock_names=None, **strategy_kwargs):
     """扫描单只股票"""
     # 获取分时数据
     minute_df = get_minute_data(code, date, client)
@@ -88,6 +101,7 @@ def _scan_single(code, date, client, strategy_fn, n, until_hour=None, until_minu
         return None
 
     eval_result['code'] = code
+    eval_result['name'] = stock_names.get(code, '') if stock_names else ''
     eval_result['date'] = date
     eval_result['change_pct'] = round(change_pct, 2)
     return eval_result
@@ -101,59 +115,17 @@ def print_results(results, strategy_id, date):
 
     print(f"\n策略: {strategy_id}  日期: {date}  命中: {len(results)}只")
 
-    # 根据策略动态选择列
-    sample = results[0]
-    if strategy_id == 'vp_pulse':
-        _print_pulse(results, strategy_id, date)
-    elif strategy_id == 'vr_slope':
-        _print_vr_slope(results, strategy_id, date)
-    else:
-        _print_sync(results, strategy_id, date)
-
-
-def _print_pulse(results, strategy_id, date):
-    """vp_pulse 策略输出"""
-    print("-" * 130)
-    print(f"{'排名':>4}  {'代码':<8}  {'综合评分':>8}  {'脉冲强度':>8}  {'脉冲点':>8}  {'涨幅':>8}  {'价格斜率':>10}  {'命中时段'}")
-    print("-" * 130)
+    print("-" * 140)
+    print(f"{'排名':>4}  {'代码':<8}  {'名称':<8}  {'综合评分':>8}  {'量比斜率':>8}  {'命中窗口':>8}  {'涨幅':>8}  {'价格斜率':>10}  {'命中时段'}")
+    print("-" * 140)
 
     for i, r in enumerate(results):
         chg = r['change_pct']
         chg_str = f"+{chg:.2f}%" if chg >= 0 else f"{chg:.2f}%"
-        print(f"{i+1:>4}  {r['code']:<8}  {r['score']:>8.4f}  {r['pulse_intensity']:>8.2f}  "
-              f"{r['hit_count']:>4}/{r['total_minutes']}  {chg_str:>8}  {r['price_slope']:>10.6f}  {r['hit_periods']}")
-
-    print("-" * 130)
-
-
-def _print_vr_slope(results, strategy_id, date):
-    """vr_slope 策略输出"""
-    print("-" * 130)
-    print(f"{'排名':>4}  {'代码':<8}  {'综合评分':>8}  {'量比斜率':>8}  {'命中窗口':>8}  {'涨幅':>8}  {'价格斜率':>10}  {'命中时段'}")
-    print("-" * 130)
-
-    for i, r in enumerate(results):
-        chg = r['change_pct']
-        chg_str = f"+{chg:.2f}%" if chg >= 0 else f"{chg:.2f}%"
-        print(f"{i+1:>4}  {r['code']:<8}  {r['score']:>8.4f}  {r['avg_vr_slope_deg']:>6.1f}°  "
+        print(f"{i+1:>4}  {r['code']:<8}  {r['name']:<8}  {r['score']:>8.4f}  {r['avg_vr_slope_deg']:>6.1f}°  "
               f"{r['hit_windows']:>4}/{r['total_windows']}  {chg_str:>8}  {r['price_slope']:>10.6f}  {r['hit_periods']}")
 
-    print("-" * 130)
-
-
-def _print_sync(results, strategy_id, date):
-    """vp_sync 策略输出"""
-    print("-" * 130)
-    print(f"{'排名':>4}  {'代码':<8}  {'综合评分':>8}  {'价格斜率':>10}  {'同步率':>6}  {'最新量比':>8}  {'涨幅':>8}  {'命中窗口':>8}  {'命中时段'}")
-    print("-" * 130)
-
-    for i, r in enumerate(results):
-        chg = r['change_pct']
-        chg_str = f"+{chg:.2f}%" if chg >= 0 else f"{chg:.2f}%"
-        print(f"{i+1:>4}  {r['code']:<8}  {r['score']:>8.4f}  {r['price_slope']:>10.6f}  "
-              f"{r['sync_rate']:>6.4f}  {r['latest_vr']:>8.2f}  {chg_str:>8}  {r['hit_windows']:>4}/{r['total_windows']}  {r['hit_periods']}")
-
-    print("-" * 130)
+    print("-" * 140)
 
 
 def export_results(results, strategy_id, date):
@@ -167,6 +139,40 @@ def export_results(results, strategy_id, date):
         os.makedirs(data_dir)
 
     output_file = os.path.join(data_dir, f"{strategy_id}_{date}.csv")
+
+    # 重命名列并指定顺序
+    col_order = ['代码', '名称', '涨幅%', '量比斜率(度)', '综合评分', '命中窗口', '总窗口', '价格斜率', '命中时段', '日期']
+    rename_map = {
+        'score': '综合评分',
+        'avg_vr_slope_deg': '量比斜率(度)',
+        'hit_windows': '命中窗口',
+        'total_windows': '总窗口',
+        'price_slope': '价格斜率',
+        'hit_periods': '命中时段',
+        'name': '名称',
+        'code': '代码',
+        'date': '日期',
+        'change_pct': '涨幅%',
+    }
     df = pd.DataFrame(results)
-    df.round(4).to_csv(output_file, index=False)
+    df = df.rename(columns=rename_map)
+    df = df[col_order]
+    df.to_csv(output_file, index=False)
     print(f"已导出: {output_file}")
+
+
+def export_codes(results, strategy_id, date):
+    """导出命中个股代码到文件"""
+    if not results:
+        print("无命中结果，不导出代码")
+        return
+
+    output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_file = os.path.join(output_dir, f"{strategy_id}_{date}.txt")
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for r in results:
+            f.write(r['code'] + '\n')
+    print(f"已导出代码: {output_file} ({len(results)}只)")

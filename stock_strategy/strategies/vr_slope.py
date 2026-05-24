@@ -52,8 +52,6 @@ def evaluate(df, window=3, vr_slope=5, vr_up=True, price_up=True, min_hits=3, me
 
     # 全天价格斜率（归一化）
     price_slope = _slope(time_index, price) / np.mean(price)
-    if price_slope <= 0:
-        return None
 
     # 将角度阈值转为斜率阈值
     slope_threshold = math.tan(math.radians(vr_slope))
@@ -70,7 +68,7 @@ def evaluate(df, window=3, vr_slope=5, vr_up=True, price_up=True, min_hits=3, me
         # ① 量比斜率 = (VR[end] - VR[start]) / window
         vr_start = volume_ratio[i]
         vr_end = volume_ratio[end]
-        slope = (vr_end - vr_start) / window
+        slope = (vr_end - vr_start) / (window - 1)
 
         if slope < slope_threshold:
             continue

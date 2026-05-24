@@ -1,12 +1,7 @@
 # strategies/__init__.py - 策略注册
-from strategies.vp_sync import evaluate as vp_sync_evaluate
-from strategies.vp_pulse import evaluate as vp_pulse_evaluate
 from strategies.vr_slope import evaluate as vr_slope_evaluate
 
-# 策略注册表：策略ID → (evaluate函数, 参数列表)
 STRATEGIES = {
-    'vp_sync': vp_sync_evaluate,
-    'vp_pulse': vp_pulse_evaluate,
     'vr_slope': vr_slope_evaluate,
 }
 

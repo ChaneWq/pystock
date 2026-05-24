@@ -1,24 +1,28 @@
-# 强势股策略扫描工具 - 参数说明
+# 量比斜率策略扫描工具 - 参数说明
 
 ## 快速开始
 
 ```bash
-python main.py --strategy vr_slope --file codes.txt --date 20260519
-```
-python main.py --strategy vr_slope --file codes.txt --date 20260520 --vr_slope_window 4 --vr_slope 4  --vr_slope_min_hits 
+# main.py 命令行参数
+python main.py --file codes.txt --date 20260519
 
---change_max 3
+# main_v2.py 配置式（修改代码顶部CONFIG即可）
+python main_v2.py --date 20260519
+
+python main.py --file codes.txt --vr_slope_window 4 --vr_slope 4  --vr_slope_min_hits 1
+```
+
 ---
 
 ## 通用参数
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `--strategy` | string | 必填 | 策略ID，可选：`vp_sync`、`vp_pulse`、`vr_slope` |
 | `--file` | string | 必填 | 股票代码文件路径，每行一个代码 |
 | `--date` | string | 今天 | 日期，格式 YYYYMMDD |
 | `--n` | int | 5 | 过去n个交易日，用于计算分钟均量 |
 | `--csv` | flag | 否 | 导出CSV到data目录 |
+| `--output` | flag | 否 | 导出命中个股代码到output目录 |
 | `--until` | string | 全天 | 截至时间，格式 HH:MM，模拟盘中该时间点运行 |
 | `--no_filter` | flag | 否 | 不过滤创业板(300/301)、科创板(688)、北交所(9开头) |
 | `--change_min` | float | -100 | 涨幅下限(%)，低于此值排除 |
@@ -26,76 +30,39 @@ python main.py --strategy vr_slope --file codes.txt --date 20260520 --vr_slope_w
 
 ### 通用参数详解
 
-**`--until`**：模拟盘中运行，截断分时数据到指定时间。例如 `--until 10:00` 只看09:30-10:00的数据，涨幅也以10:00的价格计算。
+**`--file`** 股票代码文件：每行一个6位股票代码，程序逐行读取后扫描。例如：
+```
+600246
+002782
+603083
+```
 
-**`--change_min` / `--change_max`**：涨幅范围过滤，在策略评估通过后判断。涨幅 = (最新价 - 昨收价) / 昨收价 × 100%。典型用法：
+**`--date`** 日期：指定要扫描哪一天的分时数据。不传则默认今天。格式 YYYYMMDD，如 `20260519`。
+
+**`--n`** 过去n个交易日：计算"分钟均量"时，取过去n个交易日的日线成交量。例如 n=5，则取5日总成交量 / 5日总交易分钟数 = 分钟均量。量比 = 累计成交量 / 时间序号 / 分钟均量。n越大，均量越稳定；n越小，越贴近近期。
+
+**`--until`** 截至时间：模拟盘中运行，截断分时数据到指定时间。例如 `--until 10:00` 只看09:30-10:00的数据，涨幅也以10:00的价格计算。适合回测"如果10点运行会选到什么"。
+
+**`--no_filter`** 不过滤板块：默认过滤掉：
+- 300/301开头 → 创业板（20%涨跌幅）
+- 688开头 → 科创板（20%涨跌幅）
+- 9开头 → 北交所（30%涨跌幅）
+
+加 `--no_filter` 保留全部。
+
+**`--change_min` / `--change_max`** 涨幅范围：涨幅 = (当前价 - 昨收价) / 昨收价 × 100%。策略命中后，涨幅不在范围内则排除。典型用法：
 - `--change_min 0 --change_max 7`：只看上涨但不超过7%的，防追高
+- `--change_min 3 --change_max 7`：只保留已启动但未过热的
 - `--change_max 5`：排除涨幅超过5%的
 - `--change_min -3`：排除跌幅超过3%的
 
-**`--no_filter`**：默认会过滤掉创业板(300/301)、科创板(688)、北交所(9开头)的股票，加此参数保留全部。
+**`--csv`** 导出CSV：导出完整评分数据到 `data/vr_slope_{日期}.csv`，包含所有字段。
+
+**`--output`** 导出命中代码：导出命中个股代码到 `output/vr_slope_{日期}.txt`，每行一个代码，可直接作为 `--file` 输入二次扫描。
 
 ---
 
-## 策略一：vp_sync（量价同步）
-
-通过滑动窗口判断量比和价格是否同步上涨。
-
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `--window` | int | 5 | 滑动窗口大小（分钟） |
-| `--sync_threshold` | float | 0.25 | 同步率阈值，0~1之间 |
-| `--vr_threshold` | float | 0.8 | 量比阈值，窗口内平均量比需大于此值 |
-
-### 示例
-
-```bash
-# 默认参数
-python main.py --strategy vp_sync --file codes.txt --date 20260519
-
-# 3分钟窗口，更严格
-python main.py --strategy vp_sync --file codes.txt --date 20260519 --window 3 --sync_threshold 0.3
-
-# 盘中模拟，只看上涨0~5%
-python main.py --strategy vp_sync --file codes.txt --date 20260519 --until 10:00 --change_min 0 --change_max 5
-```
-
----
-
-## 策略二：vp_pulse（量比脉冲）
-
-捕捉盘中量比突然放大的脉冲点，要求量比递增且价格不跌。
-
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `--pulse` | float | 2.0 | 脉冲倍数阈值，分钟量/均量 ≥ 此值才算脉冲 |
-| `--min_hits` | int | 3 | 最少脉冲点数，全天命中需 ≥ 此值 |
-| `--no_price_up` | flag | 否 | 不要求脉冲点价格上涨（默认要求） |
-| `--no_vol_up` | flag | 否 | 不要求量比递增，可捕捉下降沿脉冲 |
-| `--merge_gap` | int | 2 | 脉冲点间隔 ≤ 此值合并为同一时段 |
-
-### 示例
-
-```bash
-# 默认参数
-python main.py --strategy vp_pulse --file codes.txt --date 20260519
-
-# 只抓大脉冲（3倍以上）
-python main.py --strategy vp_pulse --file codes.txt --date 20260519 --pulse 3.0
-
-# 宽松模式，至少2个脉冲点
-python main.py --strategy vp_pulse --file codes.txt --date 20260519 --pulse 1.5 --min_hits 2
-
-# 不要求量比递增（含下降沿）
-python main.py --strategy vp_pulse --file codes.txt --date 20260519 --no_vol_up
-
-# 盘中模拟 + 涨幅过滤
-python main.py --strategy vp_pulse --file codes.txt --date 20260519 --until 10:00 --change_min 0 --change_max 7
-```
-
----
-
-## 策略三：vr_slope（量比斜率）
+## vr_slope 策略（量比斜率）
 
 以滑动窗口计算量比斜率角度，捕捉量比持续上升且价格上涨的时段。
 
@@ -116,60 +83,181 @@ python main.py --strategy vp_pulse --file codes.txt --date 20260519 --until 10:0
   ② VR[end] > VR[start] → 量比确实增加（--no_vr_up 可关闭）
   ③ price[end] >= price[start] → 价格不下跌（--no_vr_slope_price_up 可关闭）
   三者同时满足 → 命中
+
+全天命中窗口数 ≥ min_hits → 该股命中
 ```
+
+### 评分公式
+
+```
+综合评分 = 量比平均斜率角度 × 命中窗口数 × 价格斜率(归一化)
+```
+
+全天价格斜率只影响评分高低，不作为硬过滤条件。即使全天收阴但盘中存在量比脉冲，仍可被捕捉。
+
+### 策略参数详解
+
+**`--vr_slope_window`** 窗口大小（分钟）：滑动窗口的长度。窗口越大，判断越平滑；窗口越小，越敏感。
+
+```
+窗口=3：每3分钟一个判断单元
+  窗口1: 09:30-09:32（3根K线）
+  窗口2: 09:31-09:33
+  ...
+
+窗口=4：每4分钟一个判断单元
+  窗口1: 09:30-09:33
+  窗口2: 09:31-09:34
+  ...
+```
+
+| 窗口 | 特点 | 适用场景 |
+|------|------|----------|
+| 2-3 | 敏感，容易命中 | 捕捉短线脉冲 |
+| 4-5 | 平衡 | 通用（推荐4） |
+| 6-10 | 平滑，要求持续 | 排除短暂波动 |
+
+**`--vr_slope`** 量比斜率角度阈值（度）：窗口内量比上升的陡峭程度。角度越大，要求量比上升越猛。
+
+```
+窗口=4，角度=4度：
+  斜率 = tan(4°) = 0.0699
+  要求：(VR[end] - VR[start]) / 4 ≥ 0.0699
+  即：4分钟内VR增加 ≥ 0.28
+  举例：VR从2.00涨到2.28以上
+
+窗口=4，角度=10度：
+  斜率 = tan(10°) = 0.176
+  要求：4分钟内VR增加 ≥ 0.71
+  举例：VR从2.00涨到2.71以上
+```
+
+| 角度 | 含义 | 调参建议 |
+|------|------|----------|
+| 3-4° | 温和放量，容易命中 | 宽松扫描，多看几只 |
+| 5° | 默认，明显放量 | 通用 |
+| 8-10° | 较强放量 | 只看有力度启动的 |
+| 15°+ | 强势/暴量 | 只抓极端放量 |
+
+**`--no_vr_up`** 不要求量比增加：默认要求窗口首尾 `VR[end] > VR[start]`，即量比确实在增加。关闭后，只要斜率角度达标即可，允许窗口内量比先升后降但整体斜率达标的情况。一般不建议关闭。
+
+**`--no_vr_slope_price_up`** 不要求价格上涨：默认要求窗口首尾 `price[end] >= price[start]`，即窗口内价格不下跌。关闭后，只看量比变化不看价格，可能选出放量下跌的。一般不建议关闭。
+
+**`--vr_slope_min_hits`** 最少命中窗口数：全天有多少个窗口命中才算该股命中。
+
+```
+全天237个窗口（4分钟窗口），命中5个：
+  min_hits=1 → 命中（只要有1个窗口达标）
+  min_hits=3 → 命中（5 ≥ 3）
+  min_hits=8 → 不命中（5 < 8）
+```
+
+| 值 | 效果 | 适用场景 |
+|---|------|----------|
+| 1 | 宽松，1次脉冲就入选 | 初筛，多看 |
+| 3 | 默认，要求反复出现 | 通用 |
+| 5+ | 严格，要求持续放量 | 只看强势股 |
+
+**`--vr_slope_merge_gap`** 合并间隔：相邻命中窗口间隔 ≤ 此值时，合并为一个时段输出。
+
+```
+命中窗口索引：3, 4, 5, 8, 9, 15
+
+merge_gap=2：
+  3,4,5 合并 → 09:33-09:37
+  8,9 合并（8-5=3>2，新时段）→ 09:38-09:41
+  15 单独（15-9=6>2，新时段）→ 09:45-09:48
+
+merge_gap=5：
+  3,4,5,8,9 合并 → 09:33-09:41
+  15 单独 → 09:45-09:48
+```
+
+| 值 | 效果 |
+|---|------|
+| 1 | 只有紧邻的才合并，时段多且碎 |
+| 2 | 默认，间隔1-2个窗口的合并 |
+| 5+ | 大段合并，时段少且粗 |
 
 ### 角度对照表
 
-| 角度 | 3分钟VR变化 | 5分钟VR变化 | 含义 |
-|------|------------|------------|------|
-| 3° | 2.00→2.16 | 2.00→2.26 | 温和放量 |
-| 5° | 2.00→2.26 | 2.00→2.44 | 明显放量（默认） |
-| 10° | 2.00→2.53 | 2.00→2.88 | 较强放量 |
-| 15° | 2.00→2.80 | 2.00→3.34 | 强势放量 |
-| 20° | 2.00→3.09 | 2.00→3.82 | 剧烈放量 |
-| 30° | 2.00→3.73 | 2.00→4.89 | 暴量拉升 |
-| 45° | 2.00→5.00 | 2.00→7.00 | 极端拉升 |
+| 角度 | 3分钟VR变化 | 4分钟VR变化 | 5分钟VR变化 | 含义 |
+|------|------------|------------|------------|------|
+| 3° | 2.00→2.16 | 2.00→2.21 | 2.00→2.26 | 温和放量 |
+| 4° | 2.00→2.21 | 2.00→2.28 | 2.00→2.35 | 轻微放量 |
+| 5° | 2.00→2.26 | 2.00→2.35 | 2.00→2.44 | 明显放量（默认） |
+| 10° | 2.00→2.53 | 2.00→2.71 | 2.00→2.88 | 较强放量 |
+| 15° | 2.00→2.80 | 2.00→3.07 | 2.00→3.34 | 强势放量 |
+| 20° | 2.00→3.09 | 2.00→3.46 | 2.00→3.82 | 剧烈放量 |
+| 30° | 2.00→3.73 | 2.00→4.31 | 2.00→4.89 | 暴量拉升 |
+| 45° | 2.00→5.00 | 2.00→6.00 | 2.00→7.00 | 极端拉升 |
 
 ### 示例
 
 ```bash
 # 默认：3分钟窗口，5度以上
-python main.py --strategy vr_slope --file codes.txt --date 20260519
+python main.py --file codes.txt --date 20260519
+
+# 4分钟窗口，4度，至少1个命中（宽松模式）
+python main.py --file codes.txt --date 20260519 --vr_slope_window 4 --vr_slope 4 --vr_slope_min_hits 1
 
 # 10度以上（更严格，只抓明显放量）
-python main.py --strategy vr_slope --file codes.txt --date 20260519 --vr_slope 10
+python main.py --file codes.txt --date 20260519 --vr_slope 10
 
 # 5分钟窗口，15度以上
-python main.py --strategy vr_slope --file codes.txt --date 20260519 --vr_slope_window 5 --vr_slope 15
+python main.py --file codes.txt --date 20260519 --vr_slope_window 5 --vr_slope 15
 
 # 不要求量比增加
-python main.py --strategy vr_slope --file codes.txt --date 20260519 --no_vr_up
+python main.py --file codes.txt --date 20260519 --no_vr_up
 
 # 不要求价格上涨
-python main.py --strategy vr_slope --file codes.txt --date 20260519 --no_vr_slope_price_up
+python main.py --file codes.txt --date 20260519 --no_vr_slope_price_up
 
 # 盘中模拟 + 涨幅0~7%
-python main.py --strategy vr_slope --file codes.txt --date 20260519 --until 10:00 --change_min 0 --change_max 7
+python main.py --file codes.txt --date 20260519 --until 10:00 --change_min 0 --change_max 7
+
+# 盘中模拟 + 导出命中代码
+python main.py --file codes.txt --date 20260519 --until 10:00 --output
 
 # 5分钟窗口 + 10度 + 盘中模拟 + 导出CSV
-python main.py --strategy vr_slope --file codes.txt --date 20260519 --vr_slope_window 5 --vr_slope 10 --until 10:00 --csv
+python main.py --file codes.txt --date 20260519 --vr_slope_window 5 --vr_slope 10 --until 10:00 --csv
+
+# 涨幅3~7%，防追高
+python main.py --file codes.txt --date 20260519 --change_min 3 --change_max 7
 ```
 
 ---
 
-## 组合使用示例
+## main_v2.py 配置式入口
 
-```bash
-# 盘中10点运行，vr_slope策略，5分钟窗口，8度以上，涨幅0~7%，导出CSV
-python main.py --strategy vr_slope --file codes.txt --date 20260519 \
-  --vr_slope_window 5 --vr_slope 8 \
-  --until 10:00 --change_min 0 --change_max 7 --csv
+在代码顶部 `CONFIG` 字典中修改默认参数，无需记忆命令行参数：
 
-# vp_pulse策略，3倍大脉冲，涨幅不超过5%
-python main.py --strategy vp_pulse --file codes.txt --date 20260519 \
-  --pulse 3.0 --change_max 5
+```python
+CONFIG = {
+    'file': 'codes.txt',
+    'date': None,                    # None=今天
+    'until': None,                   # None=全天
+    'no_filter': False,
+    'change_min': -100,
+    'change_max': 100,
+    'output': True,                  # 默认导出命中代码
 
-# 不过滤创业板科创板，vr_slope宽松模式
-python main.py --strategy vr_slope --file codes.txt --date 20260519 \
-  --vr_slope 3 --no_filter
+    'vr_slope_window': 4,
+    'vr_slope': 4,
+    'vr_up': True,
+    'vr_slope_price_up': True,
+    'vr_slope_min_hits': 1,
+    'vr_slope_merge_gap': 2,
+}
 ```
+
+命令行仍可覆盖：`python main_v2.py --date 20260519 --vr_slope 8`
+
+---
+
+## 输出文件
+
+| 文件 | 路径 | 说明 |
+|------|------|------|
+| 命中代码 | `output/vr_slope_{日期}.txt` | 每行一个代码，可作为 --file 输入 |
+| CSV详情 | `data/vr_slope_{日期}.csv` | 完整策略评分数据 |

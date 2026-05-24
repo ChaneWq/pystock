@@ -4,20 +4,20 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime
-from scanner import scan, print_results, export_results
+from scanner import scan, print_results, export_results, export_codes
 
 # ===== 在这里修改默认参数 =====
 CONFIG = {
     # 通用参数
-    'strategy': 'vr_slope',          # 策略: vp_sync / vp_pulse / vr_slope
     'file': 'codes.txt',             # 股票代码文件
-    'date': '20260521',                    # 日期 YYYYMMDD，None=今天
+    'date': None,                    # 日期 YYYYMMDD，None=今天
     'n': 5,                          # 过去n个交易日
     'until': None,                   # 截至时间 HH:MM，None=全天
     'no_filter': False,              # True=不过滤创业板/科创板/北交所
     'change_min': -100,              # 涨幅下限(%)
     'change_max': 100,               # 涨幅上限(%)
     'csv': False,                    # True=导出CSV
+    'output': True,                  # True=导出命中个股代码
 
     # vr_slope 策略参数
     'vr_slope_window': 4,            # 窗口大小（分钟）
@@ -26,18 +26,6 @@ CONFIG = {
     'vr_slope_price_up': True,       # 窗口首尾价格是否不跌
     'vr_slope_min_hits': 1,          # 最少命中窗口数
     'vr_slope_merge_gap': 2,         # 命中窗口合并间隔
-
-    # vp_pulse 策略参数
-    'pulse': 2.0,                    # 脉冲倍数阈值
-    'min_hits': 3,                   # 最少脉冲点数
-    'pulse_price_up': True,          # 脉冲点是否要求价格上涨
-    'vol_up': True,                  # 脉冲点是否要求量比递增
-    'pulse_merge_gap': 2,            # 脉冲点合并间隔
-
-    # vp_sync 策略参数
-    'window': 5,                     # 滑动窗口大小（分钟）
-    'sync_threshold': 0.25,          # 同步率阈值
-    'vr_threshold': 0.8,             # 量比阈值
 }
 # ================================
 
@@ -104,56 +92,35 @@ def main():
         sys.exit(1)
 
     # 构建策略参数
-    strategy = cfg['strategy']
-    if strategy == 'vr_slope':
-        strategy_kwargs = {
-            'window': cfg['vr_slope_window'],
-            'vr_slope': cfg['vr_slope'],
-            'vr_up': cfg['vr_up'],
-            'price_up': cfg['vr_slope_price_up'],
-            'min_hits': cfg['vr_slope_min_hits'],
-            'merge_gap': cfg['vr_slope_merge_gap'],
-        }
-        print("策略: %s  日期: %s  股票数: %d  窗口: %d分钟  量比斜率: %.0f度  量比增加: %s  价格上涨: %s  最少命中: %d  合并间隔: %d%s" % (
-            strategy, date, len(codes), cfg['vr_slope_window'], cfg['vr_slope'], cfg['vr_up'],
-            cfg['vr_slope_price_up'], cfg['vr_slope_min_hits'], cfg['vr_slope_merge_gap'],
-            "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
-    elif strategy == 'vp_pulse':
-        strategy_kwargs = {
-            'pulse': cfg['pulse'],
-            'min_hits': cfg['min_hits'],
-            'price_up': cfg['pulse_price_up'],
-            'vol_up': cfg['vol_up'],
-            'merge_gap': cfg['pulse_merge_gap'],
-        }
-        print("策略: %s  日期: %s  股票数: %d  脉冲阈值: %.1f  最少脉冲点: %d  价格上涨: %s  量比递增: %s  合并间隔: %d%s" % (
-            strategy, date, len(codes), cfg['pulse'], cfg['min_hits'], cfg['pulse_price_up'],
-            cfg['vol_up'], cfg['pulse_merge_gap'],
-            "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
-    elif strategy == 'vp_sync':
-        strategy_kwargs = {
-            'window': cfg['window'],
-            'sync_threshold': cfg['sync_threshold'],
-            'vr_threshold': cfg['vr_threshold'],
-        }
-        print("策略: %s  日期: %s  股票数: %d  窗口: %d分钟  同步阈值: %.2f  量比阈值: %.1f%s" % (
-            strategy, date, len(codes), cfg['window'], cfg['sync_threshold'], cfg['vr_threshold'],
-            "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
-    else:
-        strategy_kwargs = {}
+    strategy_kwargs = {
+        'window': cfg['vr_slope_window'],
+        'vr_slope': cfg['vr_slope'],
+        'vr_up': cfg['vr_up'],
+        'price_up': cfg['vr_slope_price_up'],
+        'min_hits': cfg['vr_slope_min_hits'],
+        'merge_gap': cfg['vr_slope_merge_gap'],
+    }
+    print("策略: vr_slope  日期: %s  股票数: %d  窗口: %d分钟  量比斜率: %.0f度  量比增加: %s  价格上涨: %s  最少命中: %d  合并间隔: %d%s" % (
+        date, len(codes), cfg['vr_slope_window'], cfg['vr_slope'], cfg['vr_up'],
+        cfg['vr_slope_price_up'], cfg['vr_slope_min_hits'], cfg['vr_slope_merge_gap'],
+        "  截至时间: %s" % cfg['until'] if cfg['until'] else ""))
 
     # 扫描
-    results = scan(codes, date, strategy, cfg['n'],
+    results = scan(codes, date, 'vr_slope', cfg['n'],
                    until_hour=until_hour, until_minute=until_minute,
                    change_min=cfg['change_min'], change_max=cfg['change_max'],
                    **strategy_kwargs)
 
     # 输出
-    print_results(results, strategy, date)
+    print_results(results, 'vr_slope', date)
 
     # 导出
     if cfg.get('csv', False):
-        export_results(results, strategy, date)
+        export_results(results, 'vr_slope', date)
+
+    # 导出代码
+    if cfg.get('output', False):
+        export_codes(results, 'vr_slope', date)
 
 
 if __name__ == "__main__":
