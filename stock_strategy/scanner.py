@@ -5,8 +5,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd
 from day_index import init_create_client
-from minute_volume_ratio.fetcher import get_minute_data, get_prev_n_day_vol
-from minute_volume_ratio.calculator import calc_avg_vol_per_minute, calc_volume_ratio
+from minute_volume_ratio.minute_vr_fetcher import get_minute_data, get_prev_n_day_vol
+from minute_volume_ratio.minute_vr_calc import calc_avg_vol_per_minute, calc_volume_ratio
 from strategies import get_strategy
 
 

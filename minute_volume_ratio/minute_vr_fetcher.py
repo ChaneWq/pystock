@@ -1,4 +1,4 @@
-# fetcher.py - 数据获取层
+# minute_vr_fetcher.py - 分时量比数据获取层
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
