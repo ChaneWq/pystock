@@ -24,8 +24,19 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 import time
 import mysql.connector
-start_dt = '2026-03-01'
-end_dt = '2026-03-11'
+
+from datetime import datetime, timedelta
+
+# 获取当前日期作为结束日期
+end_dt = datetime.now().strftime('%Y-%m-%d')
+
+# 计算7天前的日期作为开始日期
+start_dt = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+# start_dt = '2026-01-01'
+# end_dt = '2026-06-21'
+# print(f"start_dt = '{start_dt}'")
+# print(f"end_dt = '{end_dt}'")
+
 table_name = "stock_features3"
 
 # ---------------- MySQL 写入 ---------------- #
