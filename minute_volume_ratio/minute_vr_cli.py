@@ -44,7 +44,7 @@ def calc_stock_minute_vr(code, date='', n=5, client=None):
         return None
 
     # Step 2: 获取过去n日日线成交量
-    day_data = get_prev_n_day_vol(code, n, client)
+    day_data = get_prev_n_day_vol(code, n, client, date)
     if not day_data:
         return None
 
@@ -101,7 +101,7 @@ def print_stock_minute_vr(code, date='', n=5, export_csv=False):
         return
 
     # Step 2: 获取过去n日日线成交量
-    day_data = get_prev_n_day_vol(code, n, client)
+    day_data = get_prev_n_day_vol(code, n, client, date)
     if not day_data:
         return
 
